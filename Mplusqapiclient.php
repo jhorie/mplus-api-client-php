@@ -1764,7 +1764,7 @@ class MplusQAPIclient
       if($this->returnRawResult) {
           return $result;
       }
-      return ($result);
+      return objectToArray($result);
     } catch (SoapFault $e) {
       $msg = $e->getMessage();
       if (false !== stripos($msg, 'Could not connect to host') and $attempts < 3) {
@@ -1777,28 +1777,6 @@ class MplusQAPIclient
       throw new MplusQAPIException('Exception occurred: '.$e->getMessage(), 0, $e);
     }
   }
-
-  public function getArticleBranchDeviations( $attempts=0)
-  {
-    try {
-      $result = $this->client->getArticleBranchDeviations(['request' => []]);
-      if($this->returnRawResult) {
-          return $result;
-      }
-      return ($result);
-    } catch (SoapFault $e) {
-      $msg = $e->getMessage();
-      if (false !== stripos($msg, 'Could not connect to host') and $attempts < 3) {
-        sleep(1);
-        return $this->getArticleBranchDeviations($attempts + 1);
-      } else {
-        throw new MplusQAPIException('SoapFault occurred: '.$msg, 0, $e);
-      }
-    } catch (Exception $e) {
-      throw new MplusQAPIException('Exception occurred: '.$e->getMessage(), 0, $e);
-    }
-  }
-
   //----------------------------------------------------------------------------
 
   public function getStockHistory($branchNumber, $articleNumbers=array(), $sinceStockId=null, $fromFinancialDateTime=null, $throughFinancialDateTime=null, $attempts=0)
