@@ -1760,7 +1760,7 @@ class MplusQAPIclient
   public function getArticleAlterationsGroups($groupType = null, $syncMarker=null, $syncMarkerLimit=null, $attempts=0)
   {
     try {
-      $result = $this->client->getArticleAlterationsGroups(['groupType' =>$groupType]);
+      $result = $this->client->getArticleAlterationsGroups(['request' => ['groupType' =>$groupType]]);
       if($this->returnRawResult) {
           return $result;
       }
