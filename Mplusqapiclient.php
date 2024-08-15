@@ -3009,10 +3009,10 @@ class MplusQAPIclient
         }
     }
 
-    public function createOrderV3($order, $applySalesAndActions = null, $applySalesPrices = null, $applyPriceGroups = null)
+    public function createOrderV3($order, string $idempotencyKey, $applySalesAndActions = null, $applySalesPrices = null, $applyPriceGroups = null)
     {
         try {
-            $result = $this->client->createOrderV3($this->parser->convertCreateOrderV2Request($order, $applySalesAndActions, $applySalesPrices, $applyPriceGroups));
+            $result = $this->client->createOrderV3($this->parser->convertCreateOrderV3Request($order, $idempotencyKey,$applySalesAndActions, $applySalesPrices, $applyPriceGroups));
             if ($this->returnRawResult) {
                 return $result;
             }
@@ -9032,6 +9032,23 @@ class MplusQAPIDataParser
     {
         $order = $this->convertOrder($order);
         $request = ['order' => $order->order];
+        if (!is_null($applySalesAndActions)) {
+            $request['applySalesAndActions'] = $applySalesAndActions;
+        }
+        if (!is_null($applySalesPrices)) {
+            $request['applySalesPrices'] = $applySalesPrices;
+        }
+        if (!is_null($applyPriceGroups)) {
+            $request['applyPriceGroups'] = $applyPriceGroups;
+        }
+        $object = arrayToObject(['request' => $request]);
+        return $object;
+    }
+
+    public function convertCreateOrderV3Request($order, $idempotencyKey, $applySalesAndActions, $applySalesPrices, $applyPriceGroups)
+    {
+        $order = $this->convertOrder($order);
+        $request = ['order' => $order->order,'idempotencyKey' => $idempotencyKey];
         if (!is_null($applySalesAndActions)) {
             $request['applySalesAndActions'] = $applySalesAndActions;
         }
