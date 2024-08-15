@@ -3009,6 +3009,21 @@ class MplusQAPIclient
         }
     }
 
+    public function createOrderV3($order, $applySalesAndActions = null, $applySalesPrices = null, $applyPriceGroups = null)
+    {
+        try {
+            $result = $this->client->createOrderV3($this->parser->convertCreateOrderV2Request($order, $applySalesAndActions, $applySalesPrices, $applyPriceGroups));
+            if ($this->returnRawResult) {
+                return $result;
+            }
+            return $this->parser->parseCreateOrderV2Result($result);
+        } catch (SoapFault $e) {
+            throw new MplusQAPIException('SoapFault occurred: ' . $e->getMessage(), 0, $e);
+        } catch (Exception $e) {
+            throw new MplusQAPIException('Exception occurred: ' . $e->getMessage(), 0, $e);
+        }
+    }
+
     //----------------------------------------------------------------------------
 
     public function updateOrder($order)
